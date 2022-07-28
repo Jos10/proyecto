@@ -476,8 +476,8 @@ renderPlotly({
 grafico_delitos <-
   estadisticas %>%
   count(Victima) %>%
-  ggplot(aes(x = reorder(Victima, n), y = n)) +
-  geom_bar(stat = "identity", fill=c(1:5)) +
+  ggplot(aes(x = reorder(Victima, -n), y = n)) +
+  geom_bar(stat = "identity")+
   ggtitle("Cantidad de delitos por victima") +
   xlab("Tipo de delito") +
   ylab("Cantidad") +
@@ -517,7 +517,7 @@ renderPlotly({
   
 ggplot2_barras_apiladas_cantidad <-
   estadisticas %>%
-  ggplot(aes(x = estadisticas$Delito, fill = estadisticas$Genero)) +
+  ggplot(aes(x = Delito, fill = Genero)) +
   geom_bar(position = "fill") +
   coord_flip()+
   xlab("Delito") +
@@ -539,7 +539,7 @@ renderPlotly({
   
 ggplot2_barras_apiladas_cantidad <-
   estadisticas %>%
-  ggplot(aes(x = estadisticas$Delito, fill = estadisticas$Edad)) +
+  ggplot(aes(x = Delito, fill = Edad)) +
   geom_bar(position = "fill") +
   ggtitle("Proporción de delitos por edad")+
   xlab("Tipo de Delito") +
