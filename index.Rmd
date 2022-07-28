@@ -340,7 +340,7 @@ distritos_delitos <-
 
 ```{r para los colores}
 colores_distritos_delitos <-
-  colorNumeric(palette = "Purples",
+  colorNumeric(palette = "Reds",
                domain = distritos_delitos$delitos,
               )
 ```
@@ -478,38 +478,33 @@ grafico_delitos <-
   count(Victima) %>%
   ggplot(aes(x = reorder(Victima, n), y = n)) +
   geom_bar(stat = "identity", fill=c(1:5)) +
+  ggtitle("Cantidad de delitos por victima") +
   xlab("Tipo de delito") +
   ylab("Cantidad") +
-   ggtitle("Cantidad de delitos por tipo de víctima") +
   coord_flip()
   theme_minimal()
-ggplotly(grafico_delitos)%>%
-  config(locale = 'es')
+ggplotly(grafico_delitos)
 })
 ```
 
 
 ### **Cantidad de delitos por mes**
-```{r}
-Del_mes <- estadisticas %>%
-  dplyr::select(Fecha, Delito)
-```
-
 
 ```{r grafico-delitos-mes, message=FALSE}
 renderPlotly({
   estadisticas <- filtrarEstadisticas()
-
-graph2 <- 
-Del_mes %>% mutate(mes = month(Fecha, label = FALSE)) %>%
-  ggplot() +
-  geom_bar(aes(x = mes), fill = "coral2", color = "coral2") + 
-  ggtitle("Cantidad de delitos por mes") + 
-  xlab("Mes (1-11)") + 
-  ylab("Cantidad") + 
-  theme_minimal() 
-ggplotly(graph2) %>%
-  config(locale = 'es')
+estadisticas$fecha2=as.numeric(format(estadisticas$Fecha,"%m"))
+tabla1=summarise(group_by(estadisticas, fecha2),
+                n=n())
+ggplot2_cantidad_delitos <- 
+  ggplot(tabla1,aes(x=fecha2, y=n)) +
+  geom_bar(stat = "identity", fill="salmon3") +
+  ggtitle("Cantidad de delitos por mes") +
+  ylab("Cantidad de Delito") +
+  xlab("Mes") +
+  scale_x_continuous(breaks = c(1:11),labels = c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","Nov"))+
+  theme_classic()
+ggplotly(ggplot2_cantidad_delitos) %>% config(locale = 'es')
 })
 ```
 
@@ -546,7 +541,7 @@ ggplot2_barras_apiladas_cantidad <-
   estadisticas %>%
   ggplot(aes(x = estadisticas$Delito, fill = estadisticas$Edad)) +
   geom_bar(position = "fill") +
-  ggtitle("Proporcion de delitos por edad")+
+  ggtitle("Proporción de delitos por edad")+
   xlab("Tipo de Delito") +
   ylab("Proporcion") +
   labs(fill = "Edad") +
